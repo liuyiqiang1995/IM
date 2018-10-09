@@ -1,6 +1,6 @@
-package com.qdcares.smart.mq.listeners;
+package com.qdcares.smartmq.listeners;
 
-import com.qdcares.smart.mq.dto.ChatMessage;
+import com.qdcares.smartmq.dto.ChatMessage;
 
 public interface MessageReceiverListener {
 	void onMessage(ChatMessage message);

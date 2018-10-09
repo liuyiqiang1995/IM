@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq.dto;
+package com.qdcares.smartmq.dto;
 
 import lombok.Getter;
 import lombok.Setter;

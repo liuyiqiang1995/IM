@@ -1,6 +1,6 @@
-package com.qdcares.smart.mq.mqtt.client;
+package com.qdcares.smartmq.mqtt.client;
 
-import com.qdcares.smart.mq.dto.ChatMessage;
+import com.qdcares.smartmq.dto.ChatMessage;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 
 /**

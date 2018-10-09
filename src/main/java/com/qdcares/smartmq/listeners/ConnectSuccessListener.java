@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq.listeners;
+package com.qdcares.smartmq.listeners;
 
 public interface ConnectSuccessListener {
 	void onMessage();

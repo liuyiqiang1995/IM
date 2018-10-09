@@ -1,13 +1,13 @@
-package com.qdcares.smart.mq.mqtt.client;
+package com.qdcares.smartmq.mqtt.client;
 
 import com.alibaba.fastjson.JSON;
-import com.qdcares.smart.mq.callback.PushCallBack;
-import com.qdcares.smart.mq.dto.ChatMessage;
+import com.qdcares.smartmq.callback.PushCallBack;
+import com.qdcares.smartmq.dto.ChatMessage;
+import com.qdcares.smartmq.listeners.MessageReceiverListener;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * @Description: Mqtt客户端
@@ -17,9 +17,12 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 public class MqttClientProxy extends AbstractMqttClient{
 
-    public MqttClientProxy(String host, String clientId) throws MqttException {
+    private MessageReceiverListener messageReceiverListener;
+
+    public MqttClientProxy(String host, String clientId,MessageReceiverListener messageReceiverListener) throws MqttException {
         // MemoryPersistence设置clientid的保存形式，默认为以内存保存
         super.client = new MqttClient(host, clientId, new MemoryPersistence());
+        this.messageReceiverListener = messageReceiverListener;
     }
 
     public void doConnnect(){
@@ -33,7 +36,7 @@ public class MqttClientProxy extends AbstractMqttClient{
         options.setCleanSession(false);
         // 如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息遗嘱
 //        options.setWill(TOPIC, "close".getBytes(), 1, true);
-        client.setCallback(new PushCallBack());
+        client.setCallback(new PushCallBack(messageReceiverListener));
         try {
             client.connect(options);
         } catch (MqttException e) {

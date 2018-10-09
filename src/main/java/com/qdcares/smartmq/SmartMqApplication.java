@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq;
+package com.qdcares.smartmq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

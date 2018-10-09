@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq.enums;
+package com.qdcares.smartmq.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

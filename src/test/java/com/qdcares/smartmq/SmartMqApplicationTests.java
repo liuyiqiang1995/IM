@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq;
+package com.qdcares.smartmq;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

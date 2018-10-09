@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq.util;
+package com.qdcares.smartmq.util;
 
 import java.util.UUID;
 

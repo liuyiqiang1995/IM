@@ -1,12 +1,14 @@
-package com.qdcares.smart.mq.client;
+package com.qdcares.smartmq.client;
 
-import com.qdcares.smart.mq.dto.ChatMessage;
-import com.qdcares.smart.mq.enums.MessageTypeEnum;
-import com.qdcares.smart.mq.listeners.ConnectSuccessListener;
-import com.qdcares.smart.mq.listeners.ExceptionHandleListener;
-import com.qdcares.smart.mq.mqtt.client.AbstractMqttClient;
-import com.qdcares.smart.mq.mqtt.client.MqttClientProxy;
-import com.qdcares.smart.mq.util.UUIDUtil;
+import com.qdcares.smartmq.dto.ChatMessage;
+import com.qdcares.smartmq.enums.MessageTypeEnum;
+import com.qdcares.smartmq.listeners.ConnectSuccessListener;
+import com.qdcares.smartmq.listeners.ExceptionHandleListener;
+import com.qdcares.smartmq.listeners.MessageReceiverListener;
+import com.qdcares.smartmq.mqtt.client.AbstractMqttClient;
+import com.qdcares.smartmq.mqtt.client.MqttClientProxy;
+import com.qdcares.smartmq.util.UUIDUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
@@ -20,13 +22,14 @@ import java.util.Date;
 @Slf4j
 public class MqClient {
 
-    private static String HOST = "tcp://192.168.163.95:1884";
-    private static String clientId;
+    @Getter private String HOST;
+    @Getter private String clientId;
     private AbstractMqttClient mqttClient;
     private static Long quiesceTimeout;
 
-    private ExceptionHandleListener exceptionHandleListener;
     private ConnectSuccessListener connectSuccessListener;
+    @Getter private ExceptionHandleListener exceptionHandleListener;
+    @Getter private MessageReceiverListener messageReceiverListener;
 
     public MqClient(String HOST, String clientId) {
         this.HOST = HOST;
@@ -35,7 +38,7 @@ public class MqClient {
 
     public void connect(){
         try {
-            mqttClient = new MqttClientProxy(HOST,clientId);
+            mqttClient = new MqttClientProxy(HOST,clientId,messageReceiverListener);
             mqttClient.doConnnect();
             //调用callback listener
             if(connectSuccessListener != null){
@@ -132,6 +135,18 @@ public class MqClient {
 
     public void addConnectSuccessListener(ConnectSuccessListener connectSuccessListener){
         this.connectSuccessListener = connectSuccessListener;
+    }
+
+    public void addMessageReceiverListener(MessageReceiverListener messageReceiverListener){
+        this.messageReceiverListener = messageReceiverListener;
+    }
+
+    /**
+     * 订阅消息
+     * @param topic 主题名称
+     */
+    public void subscribe(String topic){
+        mqttClient.subscribe(topic);
     }
 
 }

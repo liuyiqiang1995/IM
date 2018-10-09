@@ -1,8 +1,8 @@
-package com.qdcares.smart.mq.callback;
+package com.qdcares.smartmq.callback;
 
 import com.alibaba.fastjson.JSONObject;
-import com.qdcares.smart.mq.dto.ChatMessage;
-import com.qdcares.smart.mq.listeners.MessageReceiverListener;
+import com.qdcares.smartmq.dto.ChatMessage;
+import com.qdcares.smartmq.listeners.MessageReceiverListener;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -19,6 +19,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class PushCallBack implements MqttCallbackExtended {
 
     private MessageReceiverListener messageReceiverListener;
+
+    public PushCallBack(MessageReceiverListener messageReceiverListener) {
+        this.messageReceiverListener = messageReceiverListener;
+    }
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
@@ -40,8 +44,16 @@ public class PushCallBack implements MqttCallbackExtended {
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
         byte[] messagePayload = mqttMessage.getPayload();
-        ChatMessage message = (ChatMessage)JSONObject.parse(messagePayload);
-        messageReceiverListener.onMessage(message);
+        System.out.println(new String(messagePayload));
+        ChatMessage message = null;
+        try{
+            message = (ChatMessage)JSONObject.parse(messagePayload);
+        }catch (Exception e){
+            log.error("class cast error",e);
+        }
+        if(messageReceiverListener != null){
+            messageReceiverListener.onMessage(message);
+        }
         System.out.println("接收消息主题 : " + topic);
         System.out.println("接收消息Qos : " + mqttMessage.getQos());
         System.out.println("接收消息内容 : " + message.getContent());
