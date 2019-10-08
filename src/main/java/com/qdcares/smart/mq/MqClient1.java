@@ -1,6 +1,6 @@
 package com.qdcares.smart.mq;
 
-import com.qdcares.smart.mq.client.MqClient;
+import com.qdcares.smart.mq.client.MqttServerUtil;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,19 +16,19 @@ import java.io.UnsupportedEncodingException;
 @Component
 public class MqClient1 {
 
-    private MqClient mqClient;
+    private MqttServerUtil mqClient;
 
     @PostConstruct
     void init(){
         try {
             String ip = "tcp://192.168.163.95:1884";
-            mqClient = new MqClient(ip,"client/lyq");
+            mqClient = new MqttServerUtil(ip,"client/lyq");
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
 
-    @Scheduled(initialDelay = 1000,fixedDelay = 2000)
+    @Scheduled(initialDelay = 1000,fixedDelay = 6000)
     void send(){
         String a = "12345_______________________";
         try {
