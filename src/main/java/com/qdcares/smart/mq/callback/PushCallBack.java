@@ -1,5 +1,6 @@
 package com.qdcares.smart.mq.callback;
 
+import com.qdcares.smart.mq.listeners.MessageReceiverListener;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -15,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 @Slf4j
 public class PushCallBack implements MqttCallbackExtended {
 
+    private MessageReceiverListener messageReceiverListener;
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
@@ -35,6 +37,7 @@ public class PushCallBack implements MqttCallbackExtended {
      */
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+//        messageReceiverListener.onMessage();
         // subscribe后得到的消息会执行到这里面
         System.out.println("接收消息主题 : " + topic);
         System.out.println("接收消息Qos : " + message.getQos());

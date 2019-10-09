@@ -9,17 +9,17 @@ import lombok.Setter;
  */
 @AllArgsConstructor
 public enum MessageTypeEnum {
-    TEXT(1, "文本消息"),
-    AUDIO(2, "音频"),
-    VEDIO(3, "视频"),
-    FILE(4, "文件");
+    TEXT("text", "文本消息"),
+    AUDIO("audio", "音频"),
+    VEDIO("vedio", "视频"),
+    FILE("file", "文件");
 
     /**
      * 消息类型号
      */
     @Getter
     @Setter
-    private int msgType;
+    private String msgType;
 
     /**
      * 消息类型中文描述
@@ -27,4 +27,13 @@ public enum MessageTypeEnum {
     @Getter
     @Setter
     private String msgDescription;
+
+    public static MessageTypeEnum getByMsgType(String msgType) {
+        for (MessageTypeEnum messageTypeEnum : values()) {
+            if (messageTypeEnum.getMsgType() == msgType) {
+                return messageTypeEnum;
+            }
+        }
+        return null;
+    }
 }

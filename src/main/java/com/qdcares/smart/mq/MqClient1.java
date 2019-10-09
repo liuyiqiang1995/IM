@@ -1,6 +1,5 @@
 package com.qdcares.smart.mq;
 
-import com.qdcares.smart.mq.client.MqttServerUtil;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

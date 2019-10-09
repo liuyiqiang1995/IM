@@ -1,4 +1,4 @@
-package com.qdcares.smart.mq.client;
+package com.qdcares.smart.mq.mqtt.client;
 
 import com.qdcares.smart.mq.callback.PushCallBack;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +13,14 @@ import java.io.UnsupportedEncodingException;
  * @Date: 9:31 2019/10/8
  */
 @Slf4j
-public class MqttServerUtil {
+public class MqttClientProxy extends AbstractMqttClient{
 
-    private MqttClient client;
-
-    public MqttServerUtil(String host, String clientId) throws MqttException {
+    public MqttClientProxy(String host, String clientId) throws MqttException {
         // MemoryPersistence设置clientid的保存形式，默认为以内存保存
-        client = new MqttClient(host, clientId, new MemoryPersistence());
+        super.client = new MqttClient(host, clientId, new MemoryPersistence());
     }
 
-    public void doConnnect() throws MqttException {
+    public void doConnnect(){
         //TODO 配置信息，待完善
         MqttConnectOptions options = new MqttConnectOptions();
         // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送个消息判断客户端是否在线，但这个方法并没有重连的机制
@@ -34,23 +32,41 @@ public class MqttServerUtil {
         // 如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息遗嘱
 //        options.setWill(TOPIC, "close".getBytes(), 1, true);
         client.setCallback(new PushCallBack());
-        client.connect(options);
+        try {
+            client.connect(options);
+        } catch (MqttException e) {
+           log.error("mqtt sever connect failed",e);
+        }
     }
 
     /**
      * 发布消息
-     * @param topic
+     * @param topic 主题名称
      * @param message
-     * @throws MqttException
      */
-    public void publish(String topic , String message) throws MqttException, UnsupportedEncodingException {
+    public boolean publish(String topic, String message){
         MqttTopic mqttTopic = client.getTopic(topic);
+        byte[] bytes = null;
+        try {
+            bytes = message.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error("unsupported encoding exception",e);
+        }
+        if(bytes == null || bytes.length == 0){
+            log.error("message must not be null");
+            return false;
+        }
         MqttMessage mqttMessage = new MqttMessage();
         mqttMessage.setQos(1);
-        mqttMessage.setPayload(message.getBytes("UTF-8"));
-        MqttDeliveryToken token = mqttTopic.publish(mqttMessage);
-        token.waitForCompletion();
-        System.out.println("message is published completely! " + token.isComplete());
+        mqttMessage.setPayload(bytes);
+        MqttDeliveryToken token = null;
+        try {
+            token = mqttTopic.publish(mqttMessage);
+            token.waitForCompletion();
+        } catch (MqttException e) {
+            log.error("message publish failed",e);
+        }
+        return token != null && token.isComplete();
     }
 
     /**
@@ -58,8 +74,12 @@ public class MqttServerUtil {
      * @param topic
      * @throws MqttException
      */
-    public void subscribe(String topic) throws MqttException {
-        client.subscribe(topic, 1);
+    public void subscribe(String topic){
+        try {
+            client.subscribe(topic, 1);
+        } catch (MqttException e) {
+            log.error("topic " + topic + "subscribe failed",e);
+        }
     }
 
     /**
@@ -74,7 +94,7 @@ public class MqttServerUtil {
                     client.disconnect(quiesceTimeout);
                 }
             } catch (MqttException e) {
-                log.error("mqttClient disConnect failed...",e);
+                log.error("mqttClient disConnect failed",e);
             }
         }
     }
