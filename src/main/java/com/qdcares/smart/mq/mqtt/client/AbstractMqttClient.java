@@ -1,5 +1,6 @@
 package com.qdcares.smart.mq.mqtt.client;
 
+import com.qdcares.smart.mq.dto.ChatMessage;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 
 /**
@@ -22,7 +23,7 @@ public abstract class AbstractMqttClient {
      * @param message 消息内容
      * @return 消息传递状态
      */
-    public abstract boolean publish(String topic, String message);
+    public abstract boolean publish(String topic, ChatMessage message);
 
     /**
      * 订阅主题

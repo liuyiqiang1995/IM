@@ -1,12 +1,16 @@
 package com.qdcares.smart.mq.client;
 
+import com.qdcares.smart.mq.dto.ChatMessage;
 import com.qdcares.smart.mq.enums.MessageTypeEnum;
 import com.qdcares.smart.mq.listeners.ConnectSuccessListener;
 import com.qdcares.smart.mq.listeners.ExceptionHandleListener;
 import com.qdcares.smart.mq.mqtt.client.AbstractMqttClient;
 import com.qdcares.smart.mq.mqtt.client.MqttClientProxy;
+import com.qdcares.smart.mq.util.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
+
+import java.util.Date;
 
 /**
  * @Description:
@@ -64,13 +68,13 @@ public class MqClient {
         try{
             switch (messageTypeEnum){
                 case TEXT:
-                    return sendTextMessage(topicName,message);
+                    return sendTextMessage(topicName,generateChatMessage(msgType,message));
                 case AUDIO:
-                    return sendAudioMessage(topicName,message);
+                    return sendAudioMessage(topicName,generateChatMessage(msgType,message));
                 case VEDIO:
-                    return sendVedioMessage(topicName,message);
+                    return sendVedioMessage(topicName,generateChatMessage(msgType,message));
                 case FILE:
-                    return sendFileMessage(topicName,message);
+                    return sendFileMessage(topicName,generateChatMessage(msgType,message));
                 default:
                     log.error("type {} id not found",msgType);
                     return false;
@@ -83,20 +87,29 @@ public class MqClient {
         }
     }
 
-    private boolean sendTextMessage(String topic,String message){
+    private boolean sendTextMessage(String topic,ChatMessage message){
         return mqttClient.publish(topic,message);
     }
 
-    private boolean sendVedioMessage(String topic,String message){
+    private boolean sendVedioMessage(String topic,ChatMessage message){
         return mqttClient.publish(topic,message);
     }
 
-    private boolean sendAudioMessage(String topic,String message){
+    private boolean sendAudioMessage(String topic,ChatMessage message){
         return mqttClient.publish(topic,message);
     }
 
-    private boolean sendFileMessage(String topic,String message){
+    private boolean sendFileMessage(String topic,ChatMessage message){
         return mqttClient.publish(topic,message);
+    }
+
+    private ChatMessage generateChatMessage(String type,String content){
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setUuid(UUIDUtil.getUUID());
+        chatMessage.setType(type);
+        chatMessage.setContent(content);
+        chatMessage.setTimestamp(new Date().getTime());
+        return chatMessage;
     }
 
     /**

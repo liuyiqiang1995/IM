@@ -1,5 +1,7 @@
 package com.qdcares.smart.mq.callback;
 
+import com.alibaba.fastjson.JSONObject;
+import com.qdcares.smart.mq.dto.ChatMessage;
 import com.qdcares.smart.mq.listeners.MessageReceiverListener;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -33,15 +35,16 @@ public class PushCallBack implements MqttCallbackExtended {
     }
 
     /**
-     * 接收已经预订的发布
+     * 接收已经订阅的发布
      */
     @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
-//        messageReceiverListener.onMessage();
-        // subscribe后得到的消息会执行到这里面
+    public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+        byte[] messagePayload = mqttMessage.getPayload();
+        ChatMessage message = (ChatMessage)JSONObject.parse(messagePayload);
+        messageReceiverListener.onMessage(message);
         System.out.println("接收消息主题 : " + topic);
-        System.out.println("接收消息Qos : " + message.getQos());
-        System.out.println("接收消息内容 : " + new String(message.getPayload()));
+        System.out.println("接收消息Qos : " + mqttMessage.getQos());
+        System.out.println("接收消息内容 : " + message.getContent());
     }
 
     /**

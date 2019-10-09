@@ -1,6 +1,8 @@
 package com.qdcares.smart.mq.mqtt.client;
 
+import com.alibaba.fastjson.JSON;
 import com.qdcares.smart.mq.callback.PushCallBack;
+import com.qdcares.smart.mq.dto.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -44,18 +46,13 @@ public class MqttClientProxy extends AbstractMqttClient{
      * @param topic 主题名称
      * @param message
      */
-    public boolean publish(String topic, String message){
-        MqttTopic mqttTopic = client.getTopic(topic);
-        byte[] bytes = null;
-        try {
-            bytes = message.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error("unsupported encoding exception",e);
-        }
-        if(bytes == null || bytes.length == 0){
-            log.error("message must not be null");
+    public boolean publish(String topic, ChatMessage message){
+        if(topic == null || message == null){
+            log.error("topic or message must not be null");
             return false;
         }
+        MqttTopic mqttTopic = client.getTopic(topic);
+        byte[] bytes = JSON.toJSONString(message).getBytes();
         MqttMessage mqttMessage = new MqttMessage();
         mqttMessage.setQos(1);
         mqttMessage.setPayload(bytes);
@@ -71,8 +68,7 @@ public class MqttClientProxy extends AbstractMqttClient{
 
     /**
      * 订阅消息
-     * @param topic
-     * @throws MqttException
+     * @param topic 主题名称
      */
     public void subscribe(String topic){
         try {
