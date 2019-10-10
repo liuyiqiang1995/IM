@@ -24,9 +24,12 @@ public class PushCallBack implements MqttCallbackExtended {
         this.messageReceiverListener = messageReceiverListener;
     }
 
+    /**
+     * 连接完成回调
+     */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-
+        log.info("连接成功");
     }
 
     /**
@@ -34,7 +37,7 @@ public class PushCallBack implements MqttCallbackExtended {
      */
     @Override
     public void connectionLost(Throwable cause) {
-        // 连接丢失后，一般在这里面进行重连
+        //TODO 连接丢失后，一般在这里面进行重连
         log.info("连接断开，开始重连...");
     }
 
@@ -44,23 +47,16 @@ public class PushCallBack implements MqttCallbackExtended {
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
         byte[] messagePayload = mqttMessage.getPayload();
-        System.out.println(new String(messagePayload));
-        ChatMessage message = null;
-        try{
-            message = (ChatMessage)JSONObject.parse(messagePayload);
-        }catch (Exception e){
-            log.error("class cast error",e);
-        }
+        ChatMessage message = JSONObject.parseObject(messagePayload,ChatMessage.class);
         if(messageReceiverListener != null){
             messageReceiverListener.onMessage(message);
         }
         System.out.println("接收消息主题 : " + topic);
-        System.out.println("接收消息Qos : " + mqttMessage.getQos());
         System.out.println("接收消息内容 : " + message.getContent());
     }
 
     /**
-     *  由 MqttClient.connect 激活此回调
+     *  消息发送完成回调
      */
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {

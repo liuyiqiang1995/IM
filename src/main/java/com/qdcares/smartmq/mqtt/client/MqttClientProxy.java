@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.qdcares.smartmq.callback.PushCallBack;
 import com.qdcares.smartmq.dto.ChatMessage;
 import com.qdcares.smartmq.listeners.MessageReceiverListener;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
