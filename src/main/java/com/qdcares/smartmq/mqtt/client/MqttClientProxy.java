@@ -24,17 +24,7 @@ public class MqttClientProxy extends AbstractMqttClient{
         this.messageReceiverListener = messageReceiverListener;
     }
 
-    public void doConnnect(){
-        //TODO 配置信息，待完善
-        MqttConnectOptions options = new MqttConnectOptions();
-        // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送个消息判断客户端是否在线，但这个方法并没有重连的机制
-        options.setKeepAliveInterval(20);
-        // 设置超时时间
-        options.setConnectionTimeout(10);
-        // 设置是否清空session,这里如果设置为false表示服务器会保留客户端的连接记录，设置为true表示每次连接到服务器都以新的身份连接
-        options.setCleanSession(false);
-        // 如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息遗嘱
-//        options.setWill(TOPIC, "close".getBytes(), 1, true);
+    public void doConnnect(MqttConnectOptions options){
         client.setCallback(new PushCallBack(messageReceiverListener));
         try {
             client.connect(options);
@@ -48,15 +38,18 @@ public class MqttClientProxy extends AbstractMqttClient{
      * @param topic 主题名称
      * @param message
      */
-    public boolean publish(String topic, ChatMessage message){
+    public boolean publish(String topic, ChatMessage message,Integer qos){
         if(topic == null || message == null){
             log.error("topic or message must not be null");
             return false;
         }
+        if(qos == null){
+            qos = 1;
+        }
         MqttTopic mqttTopic = client.getTopic(topic);
         byte[] bytes = JSON.toJSONString(message).getBytes();
         MqttMessage mqttMessage = new MqttMessage();
-        mqttMessage.setQos(1);
+        mqttMessage.setQos(qos);
         mqttMessage.setPayload(bytes);
         MqttDeliveryToken token = null;
         try {

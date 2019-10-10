@@ -2,6 +2,7 @@ package com.qdcares.smartmq.mqtt.client;
 
 import com.qdcares.smartmq.dto.ChatMessage;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 /**
  * @Description: MQTT CLIENT
@@ -15,7 +16,7 @@ public abstract class AbstractMqttClient {
     /**
      * 建立MQTT SERVER连接
      */
-    public abstract void doConnnect();
+    public abstract void doConnnect(MqttConnectOptions options);
 
     /**
      * 发布主题消息
@@ -23,7 +24,7 @@ public abstract class AbstractMqttClient {
      * @param message 消息内容
      * @return 消息传递状态
      */
-    public abstract boolean publish(String topic, ChatMessage message);
+    public abstract boolean publish(String topic, ChatMessage message,Integer qos);
 
     /**
      * 订阅主题

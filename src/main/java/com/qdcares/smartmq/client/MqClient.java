@@ -10,6 +10,7 @@ import com.qdcares.smartmq.mqtt.client.MqttClientProxy;
 import com.qdcares.smartmq.util.UUIDUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.Date;
@@ -36,10 +37,16 @@ public class MqClient {
         this.clientId = clientId;
     }
 
-    public void connect(){
+    public void connect(ConnectOptions connectOptions){
         try {
             mqttClient = new MqttClientProxy(HOST,clientId,messageReceiverListener);
-            mqttClient.doConnnect();
+            //TODO 配置信息，待完善
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setKeepAliveInterval(connectOptions.getKeepAliveInterval());
+            options.setConnectionTimeout(connectOptions.getConnectionTimeout());
+            options.setCleanSession(connectOptions.isCleanSession());
+            options.setAutomaticReconnect(connectOptions.isAutomaticReconnect());
+            mqttClient.doConnnect(options);
             //调用callback listener
             if(connectSuccessListener != null){
                 connectSuccessListener.onMessage();
@@ -91,19 +98,19 @@ public class MqClient {
     }
 
     private boolean sendTextMessage(String topic,ChatMessage message){
-        return mqttClient.publish(topic,message);
+        return mqttClient.publish(topic,message,1);
     }
 
     private boolean sendVedioMessage(String topic,ChatMessage message){
-        return mqttClient.publish(topic,message);
+        return mqttClient.publish(topic,message,1);
     }
 
     private boolean sendAudioMessage(String topic,ChatMessage message){
-        return mqttClient.publish(topic,message);
+        return mqttClient.publish(topic,message,1);
     }
 
     private boolean sendFileMessage(String topic,ChatMessage message){
-        return mqttClient.publish(topic,message);
+        return mqttClient.publish(topic,message,1);
     }
 
     private ChatMessage generateChatMessage(String type,String content){
