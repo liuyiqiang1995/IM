@@ -81,6 +81,18 @@ public class MqttClientProxy extends AbstractMqttClient{
     }
 
     /**
+     * 取消订阅
+     * @param topic 主题名称
+     */
+    public void unSubscribe(String topic){
+        try {
+            client.unsubscribe(topic);
+        } catch (MqttException e) {
+            log.error("topic " + topic + "unSubscribe failed",e);
+        }
+    }
+
+    /**
      * 优雅关闭连接
      */
     public void disConnect(Long quiesceTimeout){
