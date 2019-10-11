@@ -30,11 +30,17 @@ public class ConnectOptions {
      */
     @Getter private boolean automaticReconnect;
 
+    /**
+     * 设置当QOS为 1 或 2 时，可以同时传输的消息数量（默认为10）
+     */
+    @Getter private int maxInflight;
+
     public static class Builder{
         private int keepAliveInterval = 60;
         private int connectionTimeout = 30;
         private boolean cleanSession = true;
         private boolean automaticReconnect = false;
+        private int maxInflight = 10;
 
         public Builder keepAliveInterval(int keepAliveInterval){
             this.keepAliveInterval = keepAliveInterval;
@@ -56,6 +62,11 @@ public class ConnectOptions {
             return this;
         }
 
+        public Builder maxInflight(int maxInflight){
+            this.maxInflight = maxInflight;
+            return this;
+        }
+
         public ConnectOptions build(){
             return new ConnectOptions(this);
         }
@@ -67,6 +78,7 @@ public class ConnectOptions {
         connectionTimeout = builder.connectionTimeout;
         cleanSession = builder.cleanSession;
         automaticReconnect = builder.automaticReconnect;
+        maxInflight = builder.maxInflight;
     }
 
 }
