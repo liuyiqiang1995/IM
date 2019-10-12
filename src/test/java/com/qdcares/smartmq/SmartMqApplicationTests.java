@@ -1,4 +1,4 @@
-package com.qdcares.smartmq;
+package com.travelsky.im;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
