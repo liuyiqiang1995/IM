@@ -132,8 +132,8 @@ public class MqClient {
         return "chat/message/" + chatId + "/" + senderId;
     }
 
-    public void disConnect(){
-        mqttClient.disConnect(quiesceTimeout);
+    public void disconnect(){
+        mqttClient.disconnect(quiesceTimeout);
     }
 
     public void addExceptionHandleListener(ExceptionHandleListener exceptionHandleListener) {

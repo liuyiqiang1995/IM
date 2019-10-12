@@ -88,7 +88,7 @@ public class MqttClientProxy extends com.travelsky.im.mqtt.client.AbstractMqttCl
     /**
      * 优雅关闭连接
      */
-    public void disConnect(Long quiesceTimeout){
+    public void disconnect(Long quiesceTimeout){
         if(client != null && client.isConnected()){
             try {
                 if(quiesceTimeout == null || quiesceTimeout == 0L){

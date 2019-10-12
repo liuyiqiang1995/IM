@@ -36,6 +36,6 @@ public abstract class AbstractMqttClient {
      * 断开MQTT SERVER连接
      * @param quiesceTimeout 连接断开等待时间
      */
-    public abstract void disConnect(Long quiesceTimeout);
+    public abstract void disconnect(Long quiesceTimeout);
 
 }
