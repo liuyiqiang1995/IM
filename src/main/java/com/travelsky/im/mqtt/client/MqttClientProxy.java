@@ -14,7 +14,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
  * @Date: 9:31 2019/10/8
  */
 @Slf4j
-public class MqttClientProxy extends com.travelsky.im.mqtt.client.AbstractMqttClient {
+public class MqttClientProxy extends AbstractMqttClient {
 
     private ChatMessageListener chatMessageListener;
 

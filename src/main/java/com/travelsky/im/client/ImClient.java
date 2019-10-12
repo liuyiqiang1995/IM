@@ -21,7 +21,7 @@ import java.util.Date;
  * @Date: 16:41 2019/10/8
  */
 @Slf4j
-public class MqClient {
+public class ImClient {
 
     @Getter private String HOST;
     @Getter private String clientId;
@@ -32,7 +32,7 @@ public class MqClient {
     @Getter private ExceptionHandleListener exceptionHandleListener;
     @Getter private ChatMessageListener chatMessageListener;
 
-    public MqClient(String HOST, String clientId) {
+    public ImClient(String HOST, String clientId) {
         this.HOST = HOST;
         this.clientId = clientId;
     }

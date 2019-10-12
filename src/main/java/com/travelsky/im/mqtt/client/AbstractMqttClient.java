@@ -11,7 +11,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
  */
 public abstract class AbstractMqttClient {
 
-    public MqttClient client;
+    MqttClient client;
 
     /**
      * 建立MQTT SERVER连接
