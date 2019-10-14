@@ -1,5 +1,6 @@
 package com.travelsky.im.client;
 
+import com.travelsky.im.callback.ChatChangeCallBack;
 import com.travelsky.im.client.listener.ChatMessageListener;
 import com.travelsky.im.client.listener.ConnectSuccessListener;
 import com.travelsky.im.client.listener.ExceptionHandleListener;
@@ -7,6 +8,7 @@ import com.travelsky.im.dto.ChatMessage;
 import com.travelsky.im.enums.MessageTypeEnum;
 import com.travelsky.im.mqtt.client.AbstractMqttClient;
 import com.travelsky.im.mqtt.client.MqttClientProxy;
+import com.travelsky.im.util.TopicUtil;
 import com.travelsky.im.util.UUIDUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +18,20 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import java.util.Date;
 
 /**
- * @Description:
+ * @Description: 即时通讯客户端
  * @Author: LiuYiQiang
  * @Date: 16:41 2019/10/8
  */
 @Slf4j
 public class ImClient {
 
+    /**
+     * 服务地址
+     */
     @Getter private String HOST;
+    /**
+     * userID
+     */
     @Getter private String clientId;
     private AbstractMqttClient mqttClient;
     private static Long quiesceTimeout;
@@ -37,27 +45,33 @@ public class ImClient {
         this.clientId = clientId;
     }
 
-    public void connect(com.travelsky.im.client.ConnectOptions connectOptions){
+    public void connect(ConnectOptions connectOptions){
         try {
-            mqttClient = new MqttClientProxy(HOST,clientId,chatMessageListener);
-            //TODO 配置信息，待完善
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setKeepAliveInterval(connectOptions.getKeepAliveInterval());
-            options.setConnectionTimeout(connectOptions.getConnectionTimeout());
-            options.setCleanSession(connectOptions.isCleanSession());
-            options.setAutomaticReconnect(connectOptions.isAutomaticReconnect());
-            mqttClient.doConnnect(options);
-            //调用callback listener
+            mqttClient = new MqttClientProxy(HOST,clientId);
+            mqttClient.doConnnect(mqttConnectOptions(connectOptions));
+            //订阅聊天变更通知主题
+            mqttClient.subscribe(TopicUtil.subscribeChatChangeTopicName(clientId),new ChatChangeCallBack(mqttClient,chatMessageListener));
+            //连接成功回调
             if(connectSuccessListener != null){
                 connectSuccessListener.onMessage();
             }
         } catch (MqttException e) {
-            //丢给调用方处理
+            //失败处理回调
             if(exceptionHandleListener != null){
                 exceptionHandleListener.operationException(e);
             }
             log.error("mqttClient initialization failed...",e);
         }
+    }
+
+    private MqttConnectOptions mqttConnectOptions(ConnectOptions connectOptions){
+        //TODO 配置信息，待完善
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setKeepAliveInterval(connectOptions.getKeepAliveInterval());
+        options.setConnectionTimeout(connectOptions.getConnectionTimeout());
+        options.setCleanSession(connectOptions.isCleanSession());
+        options.setAutomaticReconnect(connectOptions.isAutomaticReconnect());
+        return options;
     }
 
     /**
@@ -74,7 +88,7 @@ public class ImClient {
             log.error("type {} id not found",msgType);
             return false;
         }
-        String topicName = getChatTopicName(chatId,senderId);
+        String topicName = TopicUtil.publishChatTopicName(chatId,senderId);
         try{
             switch (messageTypeEnum){
                 case TEXT:
@@ -120,16 +134,6 @@ public class ImClient {
         chatMessage.setContent(content);
         chatMessage.setTimestamp(new Date().getTime());
         return chatMessage;
-    }
-
-    /**
-     * 获取聊天消息主题名称
-     * @param chatId 聊天ID
-     * @param senderId 消息发送者ID
-     * @return 聊天消息主题名称
-     */
-    private String getChatTopicName(String chatId, String senderId){
-        return "chat/message/" + chatId + "/" + senderId;
     }
 
     public void disconnect(){

@@ -1,8 +1,5 @@
 package com.travelsky.im.callback;
 
-import com.alibaba.fastjson.JSONObject;
-import com.travelsky.im.dto.ChatMessage;
-import com.travelsky.im.client.listener.ChatMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -18,18 +15,12 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 @Slf4j
 public class PushCallBack implements MqttCallbackExtended {
 
-    private ChatMessageListener chatMessageListener;
-
-    public PushCallBack(ChatMessageListener chatMessageListener) {
-        this.chatMessageListener = chatMessageListener;
-    }
-
     /**
      * 连接完成回调
      */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        log.info("连接成功");
+        log.info("mqtt server connect success...");
     }
 
     /**
@@ -45,14 +36,9 @@ public class PushCallBack implements MqttCallbackExtended {
      * 接收已经订阅的发布
      */
     @Override
-    public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-        byte[] messagePayload = mqttMessage.getPayload();
-        ChatMessage message = JSONObject.parseObject(messagePayload,ChatMessage.class);
-        if(chatMessageListener != null){
-            chatMessageListener.onMessage(message);
-        }
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
         System.out.println("接收消息主题 : " + topic);
-        System.out.println("接收消息内容 : " + message.getContent());
+        System.out.println("接收消息内容 : " + new String(message.getPayload()));
     }
 
     /**

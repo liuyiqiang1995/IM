@@ -1,6 +1,7 @@
 package com.travelsky.im.mqtt.client;
 
 import com.travelsky.im.dto.ChatMessage;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
@@ -31,6 +32,13 @@ public abstract class AbstractMqttClient {
      * @param topic 主题名称
      */
     public abstract void subscribe(String topic);
+
+    /**
+     * 订阅主题
+     * @param topic 主题名称
+     * @param mqttMessageListener 接收消息回调
+     */
+    public abstract void subscribe(String topic,IMqttMessageListener mqttMessageListener);
 
     /**
      * 断开MQTT SERVER连接

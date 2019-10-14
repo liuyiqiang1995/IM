@@ -16,16 +16,13 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 @Slf4j
 public class MqttClientProxy extends AbstractMqttClient {
 
-    private ChatMessageListener chatMessageListener;
-
-    public MqttClientProxy(String host, String clientId,ChatMessageListener chatMessageListener) throws MqttException {
+    public MqttClientProxy(String host, String clientId) throws MqttException {
         // MemoryPersistence设置clientid的保存形式，默认为以内存保存
         super.client = new MqttClient(host, clientId, new MemoryPersistence());
-        this.chatMessageListener = chatMessageListener;
     }
 
     public void doConnnect(MqttConnectOptions options){
-        client.setCallback(new PushCallBack(chatMessageListener));
+        client.setCallback(new PushCallBack());
         try {
             client.connect(options);
         } catch (MqttException e) {
@@ -68,6 +65,19 @@ public class MqttClientProxy extends AbstractMqttClient {
     public void subscribe(String topic){
         try {
             client.subscribe(topic, 1);
+        } catch (MqttException e) {
+            log.error("topic " + topic + "subscribe failed",e);
+        }
+    }
+
+    /**
+     * 订阅消息
+     * @param topic 主题名称
+     * @param mqttMessageListener 消息接收回调
+     */
+    public void subscribe(String topic,IMqttMessageListener mqttMessageListener){
+        try {
+            client.subscribe(topic, 1,mqttMessageListener);
         } catch (MqttException e) {
             log.error("topic " + topic + "subscribe failed",e);
         }
