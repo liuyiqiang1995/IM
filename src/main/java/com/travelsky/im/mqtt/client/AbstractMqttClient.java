@@ -43,6 +43,12 @@ public abstract class AbstractMqttClient {
     public abstract void subscribe(String topic,IMqttMessageListener mqttMessageListener);
 
     /**
+     * 取消订阅
+     * @param topic 主题名称
+     */
+    public abstract void unsubscribe(String topic);
+
+    /**
      * 断开MQTT SERVER连接
      * @param quiesceTimeout 连接断开等待时间
      */

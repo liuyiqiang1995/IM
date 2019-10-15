@@ -39,8 +39,6 @@ public class ChatChangeCallBack implements IMqttMessageListener {
         ChatChangeMessage chatChangeMessage = JSONObject.parseObject(message.getPayload(),ChatChangeMessage.class);
         //获取聊天变更通知类型
         String changeType = TopicUtil.getTypeForChatChangeTopic(topic);
-        //获取聊天变更通知聊天ID
-        String chatId = TopicUtil.getChatIdForChatChangeTopic(topic);
         ChatChangeTypeEnum chatChangeTypeEnum = ChatChangeTypeEnum.getByTypeCode(changeType);
         if(chatChangeTypeEnum == null){
             log.error("type {} id not found",changeType);
@@ -49,6 +47,12 @@ public class ChatChangeCallBack implements IMqttMessageListener {
         //分类型进行处理
         switch (chatChangeTypeEnum){
             case CREATE:
+                //获取聊天变更通知聊天ID
+                String chatId = TopicUtil.getChatIdForChatChangeTopic(topic);
+                if(chatId == null){
+                    log.error("chatId must be not null");
+                    return;
+                }
                 //订阅聊天主题
                 mqttClient.subscribe(TopicUtil.subscribeChatTopicName(chatId),new ChatCallBack(chatMessageListener));
                 break;

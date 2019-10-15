@@ -48,6 +48,8 @@ public class ImClient {
             mqttClient.doConnnect(mqttConnectOptions(connectOptions));
             //订阅聊天变更通知主题
             mqttClient.subscribe(TopicUtil.subscribeChatChangeTopicName(clientId),new ChatChangeCallBack(mqttClient,chatMessageListener));
+            //订阅聊天消息回执主题
+            mqttClient.subscribe(TopicUtil.subscribeChatReceiptTopicName(clientId));
             //连接成功回调
             if(connectSuccessListener != null){
                 connectSuccessListener.onMessage();
@@ -110,6 +112,7 @@ public class ImClient {
      */
     private void initSystemContextHolder(){
         ImContextHolder imContextHolder = ImContextHolder.getInstance();
+        imContextHolder.setUserId(clientId);
         imContextHolder.setChatMessageListener(chatMessageListener);
         imContextHolder.setConnectSuccessListener(connectSuccessListener);
         imContextHolder.setExceptionHandleListener(exceptionHandleListener);

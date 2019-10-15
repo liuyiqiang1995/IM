@@ -48,14 +48,17 @@ public class ChatChangeMessageSender {
         }
         String changeTopicName = TopicUtil.publishChatChangeTopicName(type,chatId,userId);
         ChatChangeMessage chatChangeMessage = generateChatChangeMessage(groupId,userId,name,description);
+        String chatTopicName = TopicUtil.subscribeChatTopicName(chatId);
         try{
             switch (chatChangeTypeEnum){
-                case CREATE://发布变更通知 + 订阅对方聊天主题
-                    String chatTopicName = TopicUtil.subscribeChatTopicName(chatId);
+                case CREATE://发布变更通知 + 订阅聊天主题
                     mqttClient.subscribe(chatTopicName,new ChatCallBack(ImContextHolder.getInstance().getChatMessageListener()));
                     return mqttClient.publish(changeTopicName,chatChangeMessage,1);
-                case UPDATE:
-                case DELETE:
+                case UPDATE://发送变更通知
+                    return mqttClient.publish(changeTopicName,chatChangeMessage,1);
+                case DELETE://发送变更通知 + 取消订阅
+                    mqttClient.unsubscribe(chatTopicName);
+                    return mqttClient.publish(changeTopicName,chatChangeMessage,1);
                 default:
                     log.error("type {} id not found",type);
                     return false;

@@ -26,9 +26,25 @@ public class ImContextHolder {
         return SingletonClassInstance.instance;
     }
 
+    /**
+     * 登录系统的UserID
+     */
+    private String userId;
+    /**
+     * MQTT CLIENT
+     */
     private AbstractMqttClient mqttClient;
+    /**
+     * 连接成功回调
+     */
     private ConnectSuccessListener connectSuccessListener;
+    /**
+     * 异常回调
+     */
     private ExceptionHandleListener exceptionHandleListener;
+    /**
+     * 接收聊天消息回调
+     */
     private ChatMessageListener chatMessageListener;
 
 }
