@@ -1,8 +1,5 @@
 package com.travelsky.im.mqtt.client;
 
-import com.travelsky.im.client.listener.ConnectSuccessListener;
-import com.travelsky.im.client.listener.ExceptionHandleListener;
-import lombok.Getter;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
