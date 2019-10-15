@@ -1,14 +1,14 @@
 package com.travelsky.im.client;
 
-import com.travelsky.im.callback.ChatChangeCallBack;
+import com.travelsky.im.internal.callback.ChatChangeCallBack;
 import com.travelsky.im.client.listener.ChatMessageListener;
 import com.travelsky.im.client.listener.ConnectSuccessListener;
 import com.travelsky.im.client.listener.ExceptionHandleListener;
-import com.travelsky.im.holder.ImContextHolder;
-import com.travelsky.im.mqtt.client.AbstractMqttClient;
-import com.travelsky.im.mqtt.client.MqttClientProxy;
-import com.travelsky.im.sender.ChatMessageSender;
-import com.travelsky.im.util.TopicUtil;
+import com.travelsky.im.internal.holder.ImContextHolder;
+import com.travelsky.im.internal.mqtt.client.AbstractMqttClient;
+import com.travelsky.im.internal.mqtt.client.MqttClientProxy;
+import com.travelsky.im.internal.sender.ChatMessageSender;
+import com.travelsky.im.internal.util.TopicUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
