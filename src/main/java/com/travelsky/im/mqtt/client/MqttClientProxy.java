@@ -2,8 +2,6 @@ package com.travelsky.im.mqtt.client;
 
 import com.alibaba.fastjson.JSON;
 import com.travelsky.im.callback.PushCallBack;
-import com.travelsky.im.dto.ChatMessage;
-import com.travelsky.im.client.listener.ChatMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -35,7 +33,7 @@ public class MqttClientProxy extends AbstractMqttClient {
      * @param topic 主题名称
      * @param message
      */
-    public boolean publish(String topic, ChatMessage message,Integer qos){
+    public boolean publish(String topic, Object message,Integer qos){
         if(topic == null || message == null){
             log.error("topic or message must not be null");
             return false;
@@ -111,5 +109,6 @@ public class MqttClientProxy extends AbstractMqttClient {
             }
         }
     }
+
 
 }

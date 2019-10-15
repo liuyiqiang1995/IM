@@ -1,6 +1,8 @@
 package com.travelsky.im.mqtt.client;
 
-import com.travelsky.im.dto.ChatMessage;
+import com.travelsky.im.client.listener.ConnectSuccessListener;
+import com.travelsky.im.client.listener.ExceptionHandleListener;
+import lombok.Getter;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -12,6 +14,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
  */
 public abstract class AbstractMqttClient {
 
+    /**
+     * MQTT客户端
+     */
     MqttClient client;
 
     /**
@@ -25,7 +30,7 @@ public abstract class AbstractMqttClient {
      * @param message 消息内容
      * @return 消息传递状态
      */
-    public abstract boolean publish(String topic, ChatMessage message,Integer qos);
+    public abstract boolean publish(String topic, Object message,Integer qos);
 
     /**
      * 订阅主题

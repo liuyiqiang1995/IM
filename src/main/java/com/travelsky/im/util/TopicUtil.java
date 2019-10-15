@@ -36,7 +36,7 @@ public class TopicUtil {
      * @param userId 相关用户ID
      * @return 聊天消息主题名称
      */
-    public static String pulishChatChangeTopicName(String type,String chatId, String userId){
+    public static String publishChatChangeTopicName(String type,String chatId, String userId){
         return "chat/change/" + type + "/" + chatId + "/" + userId;
     }
 
