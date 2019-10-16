@@ -1,14 +1,15 @@
 package com.travelsky.im.client;
 
-import com.travelsky.im.internal.callback.ChatChangeCallBack;
+import com.travelsky.im.client.internal.callback.ChatChangeCallBack;
 import com.travelsky.im.client.listener.ChatMessageListener;
 import com.travelsky.im.client.listener.ConnectSuccessListener;
 import com.travelsky.im.client.listener.ExceptionHandleListener;
-import com.travelsky.im.internal.holder.ImContextHolder;
-import com.travelsky.im.internal.mqtt.client.AbstractMqttClient;
-import com.travelsky.im.internal.mqtt.client.MqttClientProxy;
-import com.travelsky.im.internal.sender.ChatMessageSender;
-import com.travelsky.im.internal.util.TopicUtil;
+import com.travelsky.im.client.internal.callback.ChatReceiptCallBack;
+import com.travelsky.im.client.internal.holder.ImContextHolder;
+import com.travelsky.im.client.internal.mqtt.client.AbstractMqttClient;
+import com.travelsky.im.client.internal.mqtt.client.MqttClientProxy;
+import com.travelsky.im.client.internal.sender.ChatMessageSender;
+import com.travelsky.im.client.internal.util.TopicUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -49,7 +50,7 @@ public class ImClient {
             //订阅聊天变更通知主题
             mqttClient.subscribe(TopicUtil.subscribeChatChangeTopicName(clientId),new ChatChangeCallBack(mqttClient,chatMessageListener));
             //订阅聊天消息回执主题
-            mqttClient.subscribe(TopicUtil.subscribeChatReceiptTopicName(clientId));
+            mqttClient.subscribe(TopicUtil.subscribeChatReceiptTopicName(clientId),new ChatReceiptCallBack());
             //连接成功回调
             if(connectSuccessListener != null){
                 connectSuccessListener.onMessage();
